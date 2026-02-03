@@ -36,6 +36,7 @@ subjects_gr = {
     "Greek History": "Ελληνικής Ιστορίας",
     "Management": "Διοίκησης Επιχειρήσεων",
     "Greek Traditions": "Ελληνικών Παραδόσεων",
+    "Maritime Safety and Rescue Operations": "Ναυαγοσωστικων Λειτουργιών και Ασφάλειας στη Θάλασσα",
 }
 
 
