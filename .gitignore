@@ -1,0 +1,15 @@
+# Repo-level ignores
+
+# VS Code Local History (and similar tooling)
+.history/
+.vscode/.history/
+
+# macOS
+.DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local results / artifacts
+results/
