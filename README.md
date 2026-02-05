@@ -8,8 +8,8 @@
 
 - **21,805** questions across **45** subjects
 - 4 high-level groups: **STEM**, **Humanities**, **Social Sciences**, **Other**
-- Difficulty/education levels spanning **Primary → Secondary → University → Professional** (+ an NA bucket)
-- Public vs. private split for contamination-resistant evaluation: **16,857 public** / **4,948 private (leaderboard)**
+- Difficulty/education levels spanning **Primary → Secondary → University → Professional** (+ an N/A bucket)
+- Public vs. private split for contamination-resistant evaluation: **16,857 public**/**4,948 private (leaderboard)**
 
 ## Links
 
@@ -18,10 +18,10 @@
 
 ## What makes GreekMMLU different?
 
-Most “Greek MMLU” style evaluations rely on **machine translation** from English. GreekMMLU instead uses **original Greek content** sourced or authored from real educational/professional assessments, aiming to preserve:
+Most “Greek MMLU” style evaluations rely on **machine translation** from English. Instead, GreekMMLU uses **original Greek content** sourced or authored from real educational/professional assessments, aiming to preserve:
 
 - Greek morphology and punctuation
-- Greek-specific cultural / institutional knowledge (e.g., Greek History, Greek Traditions)
+- Greek-specific cultural/institutional knowledge (e.g., Greek History, Greek Traditions)
 - Realistic exam difficulty calibration
 
 ## Task format
