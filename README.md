@@ -13,6 +13,7 @@
 
 ## Links
 
+- Our paper: https://www.arxiv.org/abs/2602.05150
 - Dataset on Hugging Face: https://huggingface.co/datasets/dascim/GreekMMLU
 - Private leaderboard: https://huggingface.co/spaces/yangzhang33/GreekMMLU-Leaderboard
 
