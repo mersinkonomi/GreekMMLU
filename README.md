@@ -108,14 +108,11 @@ See the paper for the full taxonomy and educational-level breakdown.
 If you use GreekMMLU in your work, please cite the paper:
 
 ```bibtex
-@misc{zhang2026greekmmlunativesourcedmultitaskbenchmark,
-      title={GreekMMLU: A Native-Sourced Multitask Benchmark for Evaluating Language Models in Greek}, 
-      author={Yang Zhang and Mersin Konomi and Christos Xypolopoulos and Konstantinos Divriotis and Konstantinos Skianis and Giannis Nikolentzos and Giorgos Stamou and Guokan Shang and Michalis Vazirgiannis},
-      year={2026},
-      eprint={2602.05150},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2602.05150}, 
+@article{zhang2026greekmmlu,
+  title={GreekMMLU: A Native-Sourced Multitask Benchmark for Evaluating Language Models in Greek},
+  author={Zhang, Yang and Konomi, Mersin and Xypolopoulos, Christos and Divriotis, Konstantinos and Skianis, Konstantinos and Nikolentzos, Giannis and Stamou, Giorgos and Shang, Guokan and Vazirgiannis, Michalis},
+  journal={arXiv preprint arXiv:2602.05150},
+  year={2026}
 }
 ```
 
