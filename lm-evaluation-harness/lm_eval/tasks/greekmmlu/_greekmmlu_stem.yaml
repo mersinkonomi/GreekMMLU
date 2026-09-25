@@ -1,6 +1,5 @@
 aggregate_metric_list:
--   metric: exact_match
-    filter_list: boxed-extract
+-   metric: acc
     weight_by_size: true
 group: greekmmlu_stem
 group_alias: stem

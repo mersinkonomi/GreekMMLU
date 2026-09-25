@@ -3,50 +3,13 @@ test_split: test
 fewshot_split: dev
 fewshot_config:
   sampler: first_n
-  doc_to_target: !function utils.doc_to_boxed_target
-output_type: generate_until
+output_type: multiple_choice
 doc_to_text: !function utils.doc_to_text
-doc_to_target: !function utils.doc_to_target
-generation_kwargs:
-  until:
-    - "<|im_end|>"
-    - "<|endoftext|>"
-    - "<|eot_id|>"
-    - "<|ifm|endoftext|>"
-    - "</s>"
-  do_sample: false
-  temperature: 0.0
-  max_gen_toks: 64
-filter_list:
-  - name: boxed-extract
-    filter:
-      - function: regex
-        regex_pattern: '\\boxed\s*\{\s*([ΑΒΓΔαβγδABCDabcd])\s*[.)]?\s*\}'
-        group_select: -1
-        fallback: '[invalid]'
-      - function: map
-        mapping_dict:
-          Α: Α
-          Β: Β
-          Γ: Γ
-          Δ: Δ
-          α: Α
-          β: Β
-          γ: Γ
-          δ: Δ
-          A: Α
-          B: Β
-          C: Γ
-          D: Δ
-          a: Α
-          b: Β
-          c: Γ
-          d: Δ
-        default_value: '[invalid]'
-      - function: take_first
+doc_to_choice: !function utils.doc_to_choice
+doc_to_target: answer
 metric_list:
-  - metric: exact_match
+  - metric: acc
     aggregation: mean
     higher_is_better: true
 metadata:
-  version: 2.0
+  version: 1.0

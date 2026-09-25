@@ -1,7 +1,6 @@
 aggregate_metric_list:
 -   aggregation: mean
-    metric: exact_match
-    filter_list: boxed-extract
+    metric: acc
     weight_by_size: true
 group: greekmmlu
 task:

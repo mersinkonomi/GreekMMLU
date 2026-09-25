@@ -10,21 +10,6 @@
 # Python cache
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.ruff_cache/
-.venv/
-
-# Local credentials and machine-specific configuration
-.env
-.env.*
-!.env.example
-judge_config.toml
 
 # Local results / artifacts
 results/
-*.out
-*.log
-*_report.html
-*.db
-*.sqlite
-*.sqlite3

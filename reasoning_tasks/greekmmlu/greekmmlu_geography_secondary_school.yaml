@@ -1,3 +1,0 @@
-include:
-  - _default_greekmmlu_reasoning_template_yaml
-  - ../../lm-evaluation-harness/lm_eval/tasks/greekmmlu/greekmmlu_geography_secondary_school.yaml

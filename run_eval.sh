@@ -1,41 +1,71 @@
 #!/bin/bash
-#SBATCH --job-name=greekmmlu_generate
-#SBATCH --account=michalis
-#SBATCH --qos=guaranteed-michalis
-#SBATCH --partition=gpu
-#SBATCH --time=24:00:00
-#SBATCH --mem=32G
-#SBATCH --cpus-per-task=4
-#SBATCH --gres=shard:3
-#SBATCH --array=0-11%8
-#SBATCH --output=greekmmlu_generate_%A_%a.out
+# chmod +x run_eval.sh
 
-set -euo pipefail
+# Configuration
 
-# 0..5: 0-shot; 6..11: 5-shot. Order: K2 7B, K2 3.7B,
-# Qwen 2B, Qwen 2B Base, Qwen 4B, Qwen 4B Base.
-# Prepare a named run with generative_eval.py before submitting this array.
-PROJECT_DIR="/shared/home/mersin.konomi/greekmmlu generate"
-PYTHON="/shared/home/mersin.konomi/miniconda3/envs/greekllm311/bin/python"
-export HF_HOME=/shared/models/huggingface
-export HF_HUB_CACHE=/shared/models/huggingface/hub
-export HF_MODULES_CACHE=/shared/home/mersin.konomi/cache/huggingface/modules
-export HF_DATASETS_CACHE=/shared/home/mersin.konomi/cache/huggingface/datasets
-export HF_HUB_OFFLINE=1
-export HF_DATASETS_OFFLINE=1
-export TRANSFORMERS_OFFLINE=1
-export TOKENIZERS_PARALLELISM=false
-export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-4}"
-export PYTHONUNBUFFERED=1
-export PYTHONPATH="${PROJECT_DIR}/lm-evaluation-harness${PYTHONPATH:+:${PYTHONPATH}}"
-export PYTORCH_ALLOC_CONF=expandable_segments:True
+OUTPUT_PATH="results/"
 
-: "${GEN_RUN_ID:?Set GEN_RUN_ID to the prepared run identifier}"
-ARRAY_INDEX="${SLURM_ARRAY_TASK_ID:-${ARRAY_ID:-}}"
-: "${ARRAY_INDEX:?Submit as a Slurm array, or set ARRAY_ID inside a GPU allocation}"
+# Define models to test
+declare -a MODELS=(
+    "Qwen/Qwen2.5-0.5B"
+    # "Qwen/Qwen2.5-0.5B-Instruct"
+    # "Qwen/Qwen3-0.6B"
+)
 
-exec "$PYTHON" "${PROJECT_DIR}/generative_eval.py" run \
-    --run-id "$GEN_RUN_ID" --index "$ARRAY_INDEX" \
-    --batch-size "${BATCH_SIZE:-4}"
+# Define tasks with their few-shot settings
+# Format: "task_name:few_shot_count"
+declare -a TASKS=(
+    "greekmmlu:0"
+    "greekmmlu:5"
+)
+
+echo "Starting evaluation for ${#MODELS[@]} model(s)"
+# echo "Cache directory: $CACHE_DIR"
+echo "Output path: $OUTPUT_PATH"
+echo "================================================"
+
+# Run evaluation for each model
+for MODEL_NAME in "${MODELS[@]}"; do
+    echo "Starting evaluation for model: $MODEL_NAME"
+    echo "================================================"
+    MODEL_SHORT_NAME="${MODEL_NAME##*/}"
+    # Run evaluation for each task with its specific few-shot setting
+    for task_config in "${TASKS[@]}"; do
+        # Split task name and few-shot count
+        IFS=':' read -r task_name few_shot <<< "$task_config"
+        
+        echo "Running $task_name with $few_shot few-shot examples..."
+        TASK_OUTPUT_PATH="${OUTPUT_PATH}/${task_name}_${few_shot}shot/"
+        mkdir -p "$TASK_OUTPUT_PATH"
+        
+        # Build and run the command
+        cd "$WORK_DIR"
+        accelerate launch --mixed_precision bf16 --num_processes 1 -m lm_eval \
+          --model hf \
+          --model_args "pretrained=$MODEL_NAME,parallelize=True" \
+          --tasks "$task_name" \
+          --batch_size 1 \
+          --trust_remote_code \
+          --num_fewshot "$few_shot" \
+          --output_path "$TASK_OUTPUT_PATH" \
+          --log_samples
+
+        
+        if [ $? -ne 0 ]; then
+            echo "Error: Evaluation failed for task $task_name on model $MODEL_NAME"
+            exit 1
+        fi
+        
+        echo "Completed $task_name for $MODEL_NAME"
+        echo "--------------------------------"
+    done
+
+    # rm -rf ~/.cache/huggingface/hub
+    echo "Completed all tasks for model: $MODEL_NAME"
+    echo "================================================"
+done
+
+echo "All evaluations completed successfully for all models!"
+
 
 

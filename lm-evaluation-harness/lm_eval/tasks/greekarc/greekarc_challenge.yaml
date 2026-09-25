@@ -1,3 +1,0 @@
-include: greekarc_easy.yaml
-task: greekarc_challenge
-dataset_name: ARC-Challenge
