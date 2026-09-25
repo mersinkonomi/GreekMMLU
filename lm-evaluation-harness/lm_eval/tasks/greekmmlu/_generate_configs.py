@@ -183,7 +183,11 @@ if __name__ == "__main__":
                     "group_alias": category,
                     "task": [f"greekmmlu_{category}_tasks"],
                     "aggregate_metric_list": [
-                        {"metric": "acc", "weight_by_size": True}
+                        {
+                            "metric": "exact_match",
+                            "filter_list": "boxed-extract",
+                            "weight_by_size": True,
+                        }
                     ],
                 },
                 yaml_file,
@@ -203,7 +207,12 @@ if __name__ == "__main__":
                 "group": "greekmmlu",
                 "task": greekmmlu_subcategories,
                 "aggregate_metric_list": [
-                    {"metric": "acc", "aggregation": "mean", "weight_by_size": True}
+                    {
+                        "metric": "exact_match",
+                        "filter_list": "boxed-extract",
+                        "aggregation": "mean",
+                        "weight_by_size": True,
+                    }
                 ],
             },
             yaml_file,

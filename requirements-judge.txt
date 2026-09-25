@@ -1,0 +1,6 @@
+# API runner and local validation/report tooling.
+# The project's greekllm311 environment already satisfies these ranges.
+httpx>=0.28,<1
+numpy>=2.2,<3
+pytest>=9,<10
+scipy>=1.17,<2

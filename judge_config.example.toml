@@ -1,0 +1,42 @@
+# Copy this file to judge_config.toml and replace the provider placeholders.
+# Never place an API key in this file; only name the environment variable.
+
+[source]
+run_id = "boxed_20260908_v1"
+
+[output]
+judge_run_id = "boxed_20260908_v1_intent_v1"
+
+[judge]
+transport = "openai_chat"
+base_url = "https://PROVIDER-BASE-URL/v1"
+chat_completions_path = "/chat/completions"
+model = "PINNED-JUDGE-MODEL-VERSION"
+api_key_env = "JUDGE_API_KEY"
+auth_header = "Authorization"
+auth_scheme = "Bearer"
+
+# Pick one mode during the pilot and keep it fixed for the entire judge run.
+# json_schema is preferred when the provider supports strict Structured Outputs.
+structured_mode = "json_schema" # json_schema | json_object | prompt_json
+temperature = 0
+omit_temperature = false
+max_output_tokens = 180
+token_parameter = "max_tokens" # or max_completion_tokens for providers that require it
+timeout_seconds = 90
+max_attempts = 6
+concurrency = 4
+requests_per_minute = 60
+tokens_per_minute = 100000
+
+[adjudication]
+seed = 20260909
+audit_per_system = 50
+accept_confidence = ["HIGH"]
+
+# Prices are deliberately not hard-coded because they change. Fill these from a
+# dated provider price sheet when preparing the cost worksheet.
+[pricing]
+as_of = ""
+input_usd_per_million_tokens = 0.0
+output_usd_per_million_tokens = 0.0

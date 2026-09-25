@@ -1,0 +1,1 @@
+include: ../../lm-evaluation-harness/lm_eval/tasks/greekmmlu/_greekmmlu_social_sciences.yaml

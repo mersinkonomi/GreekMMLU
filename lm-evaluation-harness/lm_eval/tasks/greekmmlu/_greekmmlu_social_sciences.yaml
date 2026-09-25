@@ -1,5 +1,6 @@
 aggregate_metric_list:
--   metric: acc
+-   metric: exact_match
+    filter_list: boxed-extract
     weight_by_size: true
 group: greekmmlu_social_sciences
 group_alias: social_sciences

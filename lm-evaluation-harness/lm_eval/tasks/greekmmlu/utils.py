@@ -1,8 +1,15 @@
-"""
-Greek MMLU utility functions for formatting questions and choices.
-"""
+"""GreekMMLU prompt and target formatting helpers."""
 
-PROMPT = "Αυτό είναι μια ερώτηση {}. Επίλεξε τη σωστή απάντηση!\n\nΕρώτηση: {}\n{}\n\n Απάντηση:"
+
+PROMPT = (
+    "Αυτό είναι μια ερώτηση {}. Επίλεξε τη σωστή απάντηση.\n\n"
+    "Ερώτηση: {}\n"
+    "{}\n\n"
+    "Απάντησε μόνο με το γράμμα της σωστής επιλογής μέσα σε πλαίσιο. "
+    "Χρησιμοποίησε ακριβώς μία από τις εξής μορφές: {}. "
+    "Μην προσθέσεις άλλο κείμενο.\n\n"
+    "Απάντηση:"
+)
 
 
 # subjects_gr
@@ -41,8 +48,8 @@ subjects_gr = {
 
 
 
-# Greek choice labels
-LABELS = ["Α.", "Β.", "Γ.", "Δ."]
+# Greek choice labels. These are Greek code points, not Latin A/B/C/D.
+LABELS = ["Α", "Β", "Γ", "Δ"]
 
 
 def doc_to_text(doc):
@@ -62,14 +69,20 @@ def doc_to_text(doc):
     # Convert English subject to Greek
     subject_gr = subjects_gr.get(subject, subject)
     
-    # Format choices with Greek labels
+    if not 1 < len(choices) <= len(LABELS):
+        raise ValueError(
+            f"GreekMMLU expects 2-{len(LABELS)} choices, got {len(choices)}"
+        )
+
+    # Format choices with Greek labels.
     formatted_choices = []
     for i, choice in enumerate(choices):
-        formatted_choices.append(f"{LABELS[i]} {choice}")
+        formatted_choices.append(f"{LABELS[i]}. {choice}")
     
     choices_text = "\n".join(formatted_choices)
+    boxed_choices = " ή ".join(f"\\boxed{{{label}}}" for label in LABELS[: len(choices)])
     
-    return PROMPT.format(subject_gr, question, choices_text)
+    return PROMPT.format(subject_gr, question, choices_text, boxed_choices)
 
 
 def doc_to_choice(doc):
@@ -83,5 +96,20 @@ def doc_to_choice(doc):
         List of choice labels (e.g., ['Α', 'Β', 'Γ', 'Δ'])
     """
     num_choices = len(doc["choices"])
-    return [LABELS[i][0] for i in range(num_choices)]
+    return LABELS[:num_choices]
 
+
+def doc_to_target(doc):
+    """Return the normalized Greek answer label used for exact-match scoring."""
+    answer_index = int(doc["answer"])
+    num_choices = len(doc["choices"])
+    if not 0 <= answer_index < num_choices <= len(LABELS):
+        raise ValueError(
+            f"Invalid answer index {answer_index} for {num_choices} choices"
+        )
+    return LABELS[answer_index]
+
+
+def doc_to_boxed_target(doc):
+    """Format few-shot answers exactly as requested from the model."""
+    return f"\\boxed{{{doc_to_target(doc)}}}"

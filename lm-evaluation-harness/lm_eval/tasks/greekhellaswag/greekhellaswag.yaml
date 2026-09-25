@@ -1,0 +1,57 @@
+task: greekhellaswag
+dataset_path: ilsp/hellaswag_greek
+dataset_name: null
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: null
+fewshot_split: train
+fewshot_config:
+  sampler: first_n
+  doc_to_target: !function utils.doc_to_boxed_target
+process_docs: !function utils.process_docs
+doc_to_text: !function utils.doc_to_text
+doc_to_target: !function utils.doc_to_target
+generation_kwargs:
+  until:
+    - "<|im_end|>"
+    - "<|endoftext|>"
+    - "<|eot_id|>"
+    - "<|ifm|endoftext|>"
+    - "</s>"
+  do_sample: false
+  temperature: 0.0
+  max_gen_toks: 64
+filter_list:
+  - name: boxed-extract
+    filter:
+      - function: regex
+        regex_pattern: '\\boxed\s*\{\s*([ΑΒΓΔαβγδABCDabcd])\s*[.)]?\s*\}'
+        group_select: -1
+        fallback: '[invalid]'
+      - function: map
+        mapping_dict:
+          Α: Α
+          Β: Β
+          Γ: Γ
+          Δ: Δ
+          α: Α
+          β: Β
+          γ: Γ
+          δ: Δ
+          A: Α
+          B: Β
+          C: Γ
+          D: Δ
+          a: Α
+          b: Β
+          c: Γ
+          d: Δ
+        default_value: '[invalid]'
+      - function: take_first
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 2.0
